@@ -106,6 +106,7 @@ exports.Update = async (req, res) => {
     console.log('updateSignal');
     const request = req.body;
     const user = req.user;
+    console.log("user", user, request);
     if (user) {
         console.log("items");
         Admin.findOneAndUpdate({ user }, { $set: request }, { new: false }, (err, updatedDocument) => {
@@ -114,7 +115,7 @@ exports.Update = async (req, res) => {
                 res.status(500).json({ error: err });
                 console.log(err);
             } else {
-                console.log("updated", updatedDocument);
+                // console.log("updated", updatedDocument);
                 const payload = {
                     email: user.email,
                     userRole: user.userRole,

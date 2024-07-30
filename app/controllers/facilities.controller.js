@@ -78,31 +78,29 @@ exports.Update = async (req, res) => {
     console.log('updateSignal');
     const request = req.body;
     const user = req.user;
+    console.log("user", user, request);
     if (user) {
         console.log("items");
-        Facility.findOneAndUpdate({ user }, { $set: request }, { new: false }, (err, updatedDocument) => {
-            if (err) {
-                // Handle the error, e.g., return an error response
-                res.status(500).json({ error: err });
-                console.log(err);
-            } else {
-                console.log("updated", updatedDocument);
-                const payload = {
-                    email: user.email,
-                    userRole: user.userRole,
-                    iat: Math.floor(Date.now() / 1000), // Issued at time
-                    exp: Math.floor(Date.now() / 1000) + expirationTime // Expiration time
-                }
-                const token = setToken(payload);
-                console.log(token);
-                // Document updated successfully, return the updated document as the response
+        try {
+            const updatedDocument = await Facility.findOneAndUpdate({contactEmail: req.user.contactEmail, userRole: req.user.userRole}, { $set: request }, { new: false });
+            const payload = {
+                email: user.email,
+                userRole: user.userRole,
+                iat: Math.floor(Date.now() / 1000), // Issued at time
+                exp: Math.floor(Date.now() / 1000) + expirationTime // Expiration time
+            };
+            const token = setToken(payload);
+            console.log(token, "\n");
+            if (updatedDocument) {
                 res.status(200).json({ message: 'Trading Signals saved Successfully', token: token, user: updatedDocument });
             }
-        })
+        } catch (err) {
+            // Handle the error, e.g., return an error response
+            res.status(500).json({ error: err });
+            console.log(err);
+        }
     }
-
-
-}
+};
 
 //Logout Account
 exports.logout = async (req, res) => {
