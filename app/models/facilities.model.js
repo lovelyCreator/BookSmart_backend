@@ -31,7 +31,7 @@ module.exports = mongoose => {
             required: true,
         },
         contactPhone: {
-            type: Number,
+            type: String,
             required: true,
         },
         password: {

@@ -9,7 +9,7 @@ const { verify } = require('jsonwebtoken');
 const moment = require('moment');
 
 const limitAccNum = 100;
-const expirationTime = 6000;
+const expirationTime = 10000000;
 //Regiseter Account
 exports.signup = async (req, res) => {
     try {

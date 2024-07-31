@@ -10,8 +10,8 @@ module.exports = mongoose => {
       default: "BDA"
     },
     entryDate: {
-      type: Date,
-      default: new Date()
+      type: String,
+      default: ''
     },
     bid: {
       type: String,
@@ -94,7 +94,7 @@ module.exports = mongoose => {
     },
     timeSheetTemplate: {
       type: String,
-      default: 0
+      default: ''
     },
     timeSheetVerified: {
       type: Boolean,
@@ -108,9 +108,9 @@ module.exports = mongoose => {
       type: Number,
       default: 0
     },
-    hoursDateAndTime: {
-      type: String,
-      default: ''
+    isHoursSubmit: {
+      type: Boolean,
+      default: false
     },
     hoursTimer: {
       type: String,
@@ -120,13 +120,13 @@ module.exports = mongoose => {
       type: String,
       default: ''
     },
-    isHoursSubmit: {
-      type: String,
-      default: ''
+    hoursDateAndTime: {
+      type: Date,
+      default: new Date()
     },
     isHoursApproved: {
       type: String,
-      default: ''
+      default: false
     },
     preTime: {
       type: String,

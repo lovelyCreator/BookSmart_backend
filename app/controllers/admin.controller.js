@@ -6,7 +6,7 @@ const Admin = db.admins;
 const nodemailer = require('nodemailer');
 
 const limitAccNum = 100;
-const expirationTime = 1800;
+const expirationTime = 10000000;
 //Register Account
 exports.signup = async (req, res) => {
     try {

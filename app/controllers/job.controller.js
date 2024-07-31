@@ -6,7 +6,7 @@ const Job = db.jobs;
 const moment = require('moment');
 
 const limitAccNum = 100;
-const expirationTime = 1800;
+const expirationTime = 10000000;
 //Regiseter Account
 exports.postJob = async (req, res) => {
   try {
@@ -18,10 +18,12 @@ exports.postJob = async (req, res) => {
       const lastJob = await Job.find().sort({ jobId: -1 }).limit(1); // Retrieve the last jobId
       const lastJobId = lastJob.length > 0 ? lastJob[0].jobId : 0; // Get the last jobId value or default to 0
       const newJobId = lastJobId + 1; // Increment the last jobId by 1 to set the new jobId for the next data entry
-      const isUser = await Job.findOne({ jobId: newJobId });
+      // const isUser = await Job.findOne({ jobId: newJobId });
       const response = req.body;
       console.log("new Id------------->", newJobId)
-      response.entryDate = new Date();
+      response.entryDate = moment(new Date()).format("MM/DD/YYYY");
+      // response.hoursDateAndTIme = new Date();
+      response.payRate = '$'+response.payRate;
       response.jobId = newJobId;
       const auth = new Job(response);
       await auth.save();

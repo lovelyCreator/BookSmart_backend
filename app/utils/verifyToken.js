@@ -3,7 +3,7 @@ const db = require("../models");
 const Auth = db.authentications;
 const Clinical =  db.clinical;
 const Facility = db.facilities;
-const expirationTime = 2592000;
+const expirationTime = 10000000;
 
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
