@@ -1,3 +1,5 @@
+const { defaultAbiCoder } = require("ethers/lib/utils");
+
 module.exports = mongoose => {
   var schema = mongoose.Schema({
     jobId: {
@@ -75,14 +77,13 @@ module.exports = mongoose => {
       default: ''
     },
     shiftDateAndTimes: {
-      dateFrom: { type: String, default: '' },
-      timeFrom: { type: String, default: '' },
-      dateTo: { type: String, default: '' },
-      timeTo: { type: String, default: '' }
+      type: String,
+      default: ''
     },
     timeSheet: {
-      type: String,
-      default: '',
+      name: {type: String, default: ''},
+      content: {type: String, default: ''},
+      type: {tpye: String, default: ''}
     },
     jobRating: {
       type: Number,

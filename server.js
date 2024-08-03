@@ -52,6 +52,7 @@ require("./app/routes/clinical.route")(app);
 require("./app/routes/facilities.route")(app);
 require("./app/routes/job.routes")(app);
 require("./app/routes/admin.route.js")(app);
+require('./app/routes/bid.route.js')(app);
 // require("./app/routes/image.routes")(app);
 
 // set port, listen for requests

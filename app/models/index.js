@@ -10,4 +10,5 @@ db.clinical = require("./clinical.model.js")(mongoose);
 db.jobs = require("./job.model.js")(mongoose);
 db.facilities = require("./facilities.model.js")(mongoose);
 db.admins = require("./admin.model.js")(mongoose);
+db.bids = require('./bidsAndOffers.modal.js')(mongoose);
 module.exports = db;
