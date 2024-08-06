@@ -7,7 +7,9 @@ module.exports = app => {
   // Create a new Spot
   router.get("/shifts", verifyUser, jobs.shifts);
   router.post("/postJob", verifyUser, jobs.postJob);
-  router.get("/myShift", verifyUser, jobs.myShift)
+  router.get("/myShift", verifyUser, jobs.myShift);
+  router.get("/getDashboardData", verifyUser, jobs.getAllData)
+  router.post('/update', verifyUser, jobs.Update);
 
   app.use("/api/jobs", router);
 };

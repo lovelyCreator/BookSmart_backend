@@ -3,6 +3,7 @@ const db = require("../models");
 const Auth = db.authentications;
 const Clinical =  db.clinical;
 const Facility = db.facilities;
+const Admin = db.admins;
 const expirationTime = 10000000;
 
 const verifyToken = (req, res, next) => {
@@ -44,7 +45,10 @@ const verifyUser = (req, res, next) => {
             isUser = await Facility.findOne({contactEmail: req.user.contactEmail, userRole: req.user.userRole})
         } else if(req.user.userRole === "Clinicians") {
             isUser = await Clinical.findOne({email: req.user.email, userRole: req.user.userRole})
+        } else if(req.user.userRole === "Admin") {
+            isUser = await Admin.findOne({email: req.user.email, userRole: req.user.userRole})
         }
+        
         // console.log(isUser, req.user)
         if (isUser) {
             const currentDate = Math.floor(Date.now() / 1000);

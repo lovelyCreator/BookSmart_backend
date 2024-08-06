@@ -26,29 +26,17 @@ module.exports = mongoose => {
           type: String,
           required: true
       },
-      contactEmail: {
+      email: {
           type: String,
           required: true,
       },
-      contactPhone: {
+      phone: {
           type: Number,
           required: true,
       },
       password: {
           type: String,
           required: true,
-      },
-      contactPassword: {
-          type: String,
-          default: ''
-      },
-      facilityAcknowledgeTerm: {
-          type: Boolean,
-          default: false
-      },
-      signature: {
-          type: String,
-          default: ''
       },
       address: {
           street: { type: String, required: true, default: '' },
@@ -62,6 +50,10 @@ module.exports = mongoose => {
           type: { type: String, default: '' },
           name: { type: String, default: '' }
       },
+      logined: {
+        type: Boolean,
+        default: false
+      }
   });
 
   schema.method("toJSON", function () {

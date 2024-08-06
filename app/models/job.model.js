@@ -81,9 +81,9 @@ module.exports = mongoose => {
       default: ''
     },
     timeSheet: {
-      name: {type: String, default: ''},
-      content: {type: String, default: ''},
-      type: {tpye: String, default: ''}
+      content: { type: String, default: '' },
+      type: { type: String, default: '' },
+      name: { type: String, default: '' },
     },
     jobRating: {
       type: Number,
