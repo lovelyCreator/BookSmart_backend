@@ -2,8 +2,8 @@ module.exports = mongoose => {
   var schema = mongoose.Schema({
     aic: {
       type: Number,
-      required: true,
-      unique: true
+      // required: true,
+      // unique: true
     },
     firstName: {
       type: String,
@@ -20,7 +20,7 @@ module.exports = mongoose => {
     email: {
       type: String,
       required: true,
-      // unique: true,
+      unique: true,
     },
     phoneNumber: {
       type: String,
@@ -29,27 +29,26 @@ module.exports = mongoose => {
     },
     title: {
       type: String,
-      required: true,
+      // required: true,
       default: ''
     },
     birthday: {
       type: String,
-      required: true,
+      // required: true,
     },
     socialSecurityNumber: {
       type: String,
-      required: true,
+      // required: true,
       default: ''
     },
     verifiedSocialSecurityNumber: {
       type: String,
-      required: true,
+      // required: true,
       default: ''
     },
     address: {
       streetAddress: {
         type: String,
-        required: true,
         default: ''
       },
       streetAddress2: {
@@ -58,17 +57,14 @@ module.exports = mongoose => {
       },
       city: {
         type: String,
-        required: true,
         default: ''
       },
       state: {
         type: String,
-        required: true,
         default: ''
       },
       zip: {
         type: String,
-        required: true,
         default: ''
       }
     },
@@ -129,6 +125,13 @@ module.exports = mongoose => {
       type: { type: String, default: '' },
       content: { type: String, default: '' }
     },
+    userStatus: {
+      type: String,
+      default: 'inactive'
+    },
+    device: [{
+      type: String
+    }]
   });
 
   schema.method("toJSON", function () {

@@ -24,7 +24,7 @@ const verifyToken = (req, res, next) => {
                 return res.status(401).json({ success: false, message: "Token is invalid" });
             }
             req.user = user;
-            console.log(req.user)
+            // console.log(req.user)
             next();
         });
     }
@@ -44,6 +44,7 @@ const verifyUser = (req, res, next) => {
             console.log('Facilities------------------------');
             isUser = await Facility.findOne({contactEmail: req.user.contactEmail, userRole: req.user.userRole})
         } else if(req.user.userRole === "Clinicians") {
+            console.log('Clinician');
             isUser = await Clinical.findOne({email: req.user.email, userRole: req.user.userRole})
         } else if(req.user.userRole === "Admin") {
             isUser = await Admin.findOne({email: req.user.email, userRole: req.user.userRole})

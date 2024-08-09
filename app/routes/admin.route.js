@@ -13,5 +13,9 @@ module.exports = app => {
 
   router.post('/update', verifyUser, admin.Update);
 
+  router.post('/updateUser', verifyUser, admin.UpdateUser);
+    
+  router.get('/admin', verifyUser, admin.admin);
+
   app.use("/api/admin", router);
 };

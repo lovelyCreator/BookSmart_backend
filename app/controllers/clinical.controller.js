@@ -118,14 +118,38 @@ exports.login = async (req, res) => {
     }
 }
 
+function extractNonJobId(job) {
+    const keys = Object.keys(job);
+    console.log(keys);
+    
+    // Filter out the key 'email'
+    const nonJobIdKeys = keys.filter(key => key !== 'email');
+    console.log(nonJobIdKeys);
+    
+    // Create a new object with the non-email properties
+    const newObject = {};
+    nonJobIdKeys.forEach(key => {
+        newObject[key] = job[key]; // Copy each property except 'email'
+    });
+    
+    return newObject;
+}
 //Update Account
 exports.Update = async (req, res) => {
     console.log('updateSignal');
     const request = req.body;
+    console.log(request);
     const user = req.user;
+    const role = user.userRole;
+    const extracted = extractNonJobId(request);
+    console.log(extracted)
+    if (extracted.updateEmail) {
+       extracted.email =extracted.updateEmail; // Create the new property
+       delete extracted.updateEmail;
+    }
     if (user) {
         console.log("items");
-        Clinical.findOneAndUpdate({ user }, { $set: request }, { new: false }, (err, updatedDocument) => {
+        Clinical.findOneAndUpdate(role=="Admin" ? { email: request.email, userRole: 'Clinicians' } : { user } ,role=="Admin" ? { $set: extracted } : { $set: request }, { new: false }, (err, updatedDocument) => {
             if (err) {
                 // Handle the error, e.g., return an error response
                 res.status(500).json({ error: err });
@@ -138,15 +162,65 @@ exports.Update = async (req, res) => {
                     iat: Math.floor(Date.now() / 1000), // Issued at time
                     exp: Math.floor(Date.now() / 1000) + expirationTime // Expiration time
                 }
-                const token = setToken(payload);
-                console.log(token);
-                // Document updated successfully, return the updated document as the response
-                res.status(200).json({ message: 'Trading Signals saved Successfully', token: token, user: updatedDocument });
+                if (role != 'Admin') {
+                    const token = setToken(payload);
+                    console.log(token, "\n");
+                    if (updatedDocument) {
+                        res.status(200).json({ message: 'Trading Signals saved Successfully', token: token, user: updatedDocument });
+                    }
+                } else {
+                    if (updatedDocument) {
+                        res.status(200).json({ message: 'Trading Signals saved Successfully', user: updatedDocument });
+                    }
+                }
             }
         })
     }
 
 
+}
+
+//Get All Data
+exports.clinician = async (req, res) => {
+    try {
+        // console.log("shifts");
+        const user = req.user;
+        const role = req.headers.role;
+        console.log('role------', req.headers.role);
+        const data = await Clinical.find({});
+        // console.log("data---++++++++++++++++++++++++>", data)
+        let dataArray = [];
+        if (role === 'Admin') {
+            data.map((item, index) => {
+                dataArray.push([
+                item.entryDate,
+                item.firstName,
+                item.lastName,
+                item.phoneNumber,
+                item.email,
+                item.userStatus,
+                item.userRole])
+            })
+            const payload = {
+                email: user.email,
+                userRole: user.userRole,
+                iat: Math.floor(Date.now() / 1000), // Issued at time
+                exp: Math.floor(Date.now() / 1000) + expirationTime // Expiration time
+            }
+            const token = setToken(payload);
+        // console.log('token----------------------------------------------------->',token);
+        if (token) {
+            // const updateUser = await Job.updateOne({email: email, userRole: userRole}, {$set: {logined: true}});
+            res.status(200).json({ message: "Successfully Get!", jobData: dataArray, token: token });
+        }
+        else {
+            res.status(400).json({ message: "Cannot logined User!" })
+        }
+        }
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ message: "An Error Occured!" })
+    }
 }
 
 //Logout Account

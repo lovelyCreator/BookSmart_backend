@@ -31,7 +31,7 @@ module.exports = mongoose => {
           required: true,
       },
       phone: {
-          type: Number,
+          type: String,
           required: true,
       },
       password: {
@@ -39,7 +39,7 @@ module.exports = mongoose => {
           required: true,
       },
       address: {
-          street: { type: String, required: true, default: '' },
+          street: { type: String, default: '' },
           street2: { type: String, default: '' },
           city: { type: String, default: '' },
           state: { type: String, default: '' },
@@ -53,7 +53,11 @@ module.exports = mongoose => {
       logined: {
         type: Boolean,
         default: false
-      }
+      },
+      userStatus: {
+        type: String,
+        default: 'inactive'
+      },
   });
 
   schema.method("toJSON", function () {

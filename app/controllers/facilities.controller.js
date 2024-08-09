@@ -73,26 +73,54 @@ exports.login = async (req, res) => {
     }
 }
 
+function extractNonJobId(job) {
+    const keys = Object.keys(job);
+    console.log(keys);
+    
+    // Filter out the key 'email'
+    const nonJobIdKeys = keys.filter(key => key !== 'contactEmail');
+    console.log(nonJobIdKeys);
+    
+    // Create a new object with the non-email properties
+    const newObject = {};
+    nonJobIdKeys.forEach(key => {
+        newObject[key] = job[key]; // Copy each property except 'email'
+    });
+    
+    return newObject;
+}
 //Update Account
 exports.Update = async (req, res) => {
     console.log('updateSignal');
     const request = req.body;
     const user = req.user;
+    const role = user.userRole;
+    const extracted = extractNonJobId(request);
+    if (extracted.updateEmail) {
+       extracted.contactEmail =extracted.updateEmail; // Create the new property
+       delete extracted.updateEmail;
+    }
     console.log("user", user, request);
     if (user) {
         console.log("items");
         try {
-            const updatedDocument = await Facility.findOneAndUpdate({contactEmail: req.user.contactEmail, userRole: req.user.userRole}, { $set: request }, { new: false });
+            const updatedDocument = await Facility.findOneAndUpdate(role=="Admin" ? { contactEmail: request.contactEmail, userRole: 'Facilities' } : {contactEmail: req.user.contactEmail, userRole: req.user.userRole}, role=="Admin" ? { $set: extracted } : { $set: request }, { new: false });
             const payload = {
-                email: user.email,
+                contactEmail: user.contactEmail,
                 userRole: user.userRole,
                 iat: Math.floor(Date.now() / 1000), // Issued at time
                 exp: Math.floor(Date.now() / 1000) + expirationTime // Expiration time
             };
-            const token = setToken(payload);
-            console.log(token, "\n");
-            if (updatedDocument) {
-                res.status(200).json({ message: 'Trading Signals saved Successfully', token: token, user: updatedDocument });
+            if (role != 'Admin') {
+                const token = setToken(payload);
+                console.log(token, "\n");
+                if (updatedDocument) {
+                    res.status(200).json({ message: 'Trading Signals saved Successfully', token: token, user: updatedDocument });
+                }
+            } else {
+                if (updatedDocument) {
+                    res.status(200).json({ message: 'Trading Signals saved Successfully', user: updatedDocument });
+                }
             }
         } catch (err) {
             // Handle the error, e.g., return an error response
@@ -102,6 +130,48 @@ exports.Update = async (req, res) => {
     }
 };
 
+//Get All Data
+exports.facility = async (req, res) => {
+    try {
+        // console.log("shifts");
+        const user = req.user;
+        const role = req.headers.role;
+        console.log('role------', req.headers.role);
+        const data = await Facility.find({});
+        // console.log("data---++++++++++++++++++++++++>", data)
+        let dataArray = [];
+        if (role === 'Admin') {
+            data.map((item, index) => {
+                dataArray.push([
+                item.entryDate,
+                item.firstName,
+                item.lastName,
+                item.companyName,
+                item.contactEmail,
+                item.userStatus,
+                item.userRole,])
+            })
+            const payload = {
+                email: user.email,
+                userRole: user.userRole,
+                iat: Math.floor(Date.now() / 1000), // Issued at time
+                exp: Math.floor(Date.now() / 1000) + expirationTime // Expiration time
+            }
+            const token = setToken(payload);
+        // console.log('token----------------------------------------------------->',token);
+        if (token) {
+            // const updateUser = await Job.updateOne({email: email, userRole: userRole}, {$set: {logined: true}});
+            res.status(200).json({ message: "Successfully Get!", jobData: dataArray, token: token });
+        }
+        else {
+            res.status(400).json({ message: "Cannot logined User!" })
+        }
+        }
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ message: "An Error Occured!" })
+    }
+}
 //Logout Account
 exports.logout = async (req, res) => {
     try {

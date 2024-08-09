@@ -12,6 +12,8 @@ module.exports = app => {
   router.post('/logout', facilities.logout);
 
   router.post('/update', verifyUser, facilities.Update);
+  
+  router.get('/facility', verifyUser, facilities.facility);
 
   app.use("/api/facilities", router);
 };

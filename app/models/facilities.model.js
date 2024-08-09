@@ -32,10 +32,12 @@ module.exports = mongoose => {
         },
         contactPhone: {
             type: String,
+            default: '',
             required: true,
         },
         password: {
             type: String,
+            default: '',
             required: true,
         },
         contactPassword: {
@@ -51,7 +53,7 @@ module.exports = mongoose => {
             default: ''
         },
         address: {
-            street: { type: String, required: true, default: '' },
+            street: { type: String, default: '' },
             street2: { type: String, default: '' },
             city: { type: String, default: '' },
             state: { type: String, default: '' },
@@ -61,6 +63,10 @@ module.exports = mongoose => {
             content: { type: String, default: '' },
             type: { type: String, default: '' },
             name: { type: String, default: '' }
+        },
+        userStatus: {
+          type: String,
+          default: 'inactive'
         },
     });
 

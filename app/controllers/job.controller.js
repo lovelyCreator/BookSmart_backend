@@ -209,7 +209,7 @@ exports.shifts = async (req, res) => {
         item.bid,
         item.jobStatus,
         item.jobRating,
-        "delete"])
+        item.facility])
       })
       const payload = {
         email: user.email,
@@ -419,16 +419,29 @@ exports.getAllData = async (req, res) => {
   }
 }
 
-
+function extractNonJobId(job) {
+  // Get the keys of the object
+  const keys = Object.keys(job);
+  
+  // Find the first key that is not 'jobId'
+  const nonJobIdKey = keys.find(key => key !== 'jobId');
+  
+  // Return the new object with the non-jobId property
+  return {
+      [nonJobIdKey]: job[nonJobIdKey]
+  };
+}
 //Update Account
 exports.Update = async (req, res) => {
   console.log('updateSignal');
   const request = req.body;
   const user = req.user;
+  const extracted = extractNonJobId(request);
+  console.log({extracted}, "-------------------------------------------------------");
   console.log("user", user, request);
   if (user) {
       console.log("items");
-      Job.findOneAndUpdate({ jobId: request.jobId }, { $set: {jobStatus: request.jobStatus} }, { new: false }, (err, updatedDocument) => {
+      Job.findOneAndUpdate({ jobId: request.jobId }, { $set: extracted }, { new: false }, (err, updatedDocument) => {
           if (err) {
               // Handle the error, e.g., return an error response
               res.status(500).json({ error: err });
